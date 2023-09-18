@@ -3,6 +3,8 @@ const passport = require("./passport");
 //const jwt = require("jsonwebtoken");
 const requireAuth = passport.authenticate("jwt", { session: false });
 
+module.exports = requireAuth;
+
 // const verifyToken = (req, res, next) => {
 //   // Get the token from the request headers or query string or wherever you are sending it
 //   const token = req.headers.authorization || req.query.token;
@@ -21,5 +23,3 @@ const requireAuth = passport.authenticate("jwt", { session: false });
 //     next();
 //   });
 // };
-
-module.exports = requireAuth;

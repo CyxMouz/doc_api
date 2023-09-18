@@ -92,6 +92,19 @@ This project exposes the following API routes:
   - `POST        /api/auth/register`
   - `POST        /api/auth/refresh`
 
+- (Note: Some routes are protected and require authentication or specific user roles to access.)
+
+## Middleware
+
+Several middleware functions have been implemented:
+
+- #### requireAuth: Ensure user is authenticated.
+- #### isAdmin: Ensure user is an admin.
+- #### isCustomer: Ensure user is a customer.
+- #### isAdminOrCustomer: Ensure user is an admin or customer.
+- #### isEligible: Check if a user can review a product based on past purchases.
+- #### isValidCard: To validate credit card data (yet to be implemented).
+
 ## API Endpoints
 
 ### Category API Endpoints
