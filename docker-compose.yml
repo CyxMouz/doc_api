@@ -1,22 +1,20 @@
 version: "3"
 services:
-  mongodb:
-    image: mongo
-    ports:
-      - "27017:27017"
-    networks:
-      - myIp
-
-
   app:
     build: .
     ports:
       - "3000:3000"
     depends_on:
-      - mongodb
-       networks:
-      - myIp
+      - mongo
+    networks:
+      - mynetwork
 
-      networks:
-  myIp: 127.0.0.1
-  
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:

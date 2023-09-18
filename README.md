@@ -1,4 +1,4 @@
-# Node.js REST-API for Product Management | Legal Doctrine ♥ 
+# Node.js REST-API for Product Management | Legal Doctrine
 
 Welcome to my Node.js application's README file. This document will help you get started with the application, understand its configuration, database setup, API routes, and database schema.
 
