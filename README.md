@@ -285,7 +285,9 @@ Lets setup the project now :
 
 - Note: The first time you run this command, Docker will download the necessary images which might take some time, depending on your internet connection.
 
-5- After the build is completed, your application should be running and accessible at:
+5- After the build is completed
+
+- your application should be running and accessible at:
 
       http://localhost:3000
 
