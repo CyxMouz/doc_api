@@ -337,9 +337,7 @@ The schema defines methods for comparing passwords (using bcrypt) and pre-saving
 
 The design choice captures user information, including authentication credentials, roles, and purchase history. It also allows users to have multiple addresses.
 
-## Utility
-
-#### Seeds
+## Seeds
 
 #### 1- generateRandomProduct()
 
