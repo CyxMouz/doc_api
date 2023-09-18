@@ -30,7 +30,7 @@ Configuration for this project is managed using environment variables.
 
 Note :
 
-for example, if the chain string db_URI doesnt work : MONGODB_URI=mongodb://localhost:27017
+for example, if the chain string db_URI doesnt work : MONGODB_URI=mongodb://mongo:localhost:27017
 
 Change : [localhost] to [127.0.0.1]
 
@@ -91,108 +91,6 @@ This project exposes the following API routes:
   - `POST        /api/auth/login`
   - `POST        /api/auth/register`
   - `POST        /api/auth/refresh`
-
-## Database Schema
-
-- Category Schema (category.js):
-
-This schema defines a category with a name (required and unique) and an optional description.
-
-It uses Mongoose timestamps to automatically add createdAt and updatedAt fields.
-
-The design choice here is to captures basic category information.
-
-- Product schema (product.js):
-
-This schema defines a product with fields for name, category (a reference to the Category model), price, availability, description, quantity, imageList, imageUrl, promo_rate, dated_promo, datef_promo, promo_price, totalReviews, totalStars, avg_stars, and reviews (an array of references to Review model).It also uses timestamps.
-
-The design choice is extensive, covering various product details such as pricing, availability, images as main product image and list of product images, and promotional information.
-It also maintains statistics like total reviews and average rating.
-
-The use of references for categories and reviews establishes relationships between models. So only customers who bought a products are allowed rate it.
-
-- Purchase Schema (purchase.js):
-
-The purchase schema defines a purchase with fields for user (a reference to the User model), product (a reference to the Product model), quantity, totalPrice, purchaseDate, and cardNumber.
-It uses timestamps.
-
-The design choice captures information related to purchases, including the user, product, quantity, and payment details. It also records the purchase date.
-
-- Review Schema review.js):
-
-The review schema defines a review with fields for user (a reference to the User model), product (a reference to the Product model), stars, and comment.
-It uses timestamps.
-
-The design choice allows users to provide reviews for products, including a star rating and optional comments.
-
-- User Schema (user.js):
-
-The user schema defines a user with fields for username, email, password, role (admin or customer), gender, purchaseHistory (an array of references to Purchase model), and addresses.
-It also uses timestamps.
-
-The schema defines methods for comparing passwords (using bcrypt) and pre-saving middleware for hashing passwords before saving.
-
-The design choice captures user information, including authentication credentials, roles, and purchase history. It also allows users to have multiple addresses.
-
-## Authentication Process
-
-Authentication in this application is handled using JSON Web Tokens (JWT), which provides a secure and stateless way to authenticate users.
-
-1- Registration
-
-- To register a new user, make a POST request to the /api/auth/register endpoint with the following JSON payload:
-
-#### POST /api/auth/register
-
-#### Description : Register new user with username, email, password, gender ...etc
-
-Content-Type: application/json
-
-{
-"username": "example_user",
-"email": "user@example.com",
-"password": "password123",
-"gender" : "male"
-}
-
-- If the registration is successful, you will receive a 201 Created response with a user in the user field.
-
-{
-"message": "Registration successful",
-"user": {
-"\_id": "user_id",
-"username": "example_user",
-"email": "user@example.com",
-"password": "hashed_password_here",
-"gender": "male",
-"addresses": ["kolea example city", "Khemisty as example too"],
-"createdAt": "timestamp",
-"updatedAt": "timestamp"
-}
-}
-
-- Client-Side logic (angular / react/ ... ): Store the JWT token securely on the client side (usually in a local storage) for future authentication.
-
-2- Login
-
-- To log in, make a POST request to the /api/auth/login endpoint with the following JSON payload:
-
-#### POST /api/auth/login
-
-Content-Type: application/json
-
-{
-"email": "user@example.com",
-"password": "password123"
-}
-
-- Use the registered email and password.
-
-- If the login is successful, you will receive a 200 OK response with a JWT token in the token field
-
-{
-"token": "Bearer <JWT_TOKEN>"
-}
 
 ## API Endpoints
 
@@ -300,6 +198,142 @@ Content-Type: application/json
 "createdAt": "timestamp",
 "updatedAt": "timestamp"
 }
+
+## Authentication Process
+
+Authentication in this application is handled using JSON Web Tokens (JWT), which provides a secure and stateless way to authenticate users.
+
+1- Registration
+
+- To register a new user, make a POST request to the /api/auth/register endpoint with the following JSON payload:
+
+#### POST /api/auth/register
+
+#### Description : Register new user with username, email, password, gender ...etc
+
+Content-Type: application/json
+
+{
+"username": "example_user",
+"email": "user@example.com",
+"password": "password123",
+"gender" : "male"
+}
+
+- If the registration is successful, you will receive a 201 Created response with a user in the user field.
+
+{
+"message": "Registration successful",
+"user": {
+"\_id": "user_id",
+"username": "example_user",
+"email": "user@example.com",
+"password": "hashed_password_here",
+"gender": "male",
+"addresses": ["kolea example city", "Khemisty as example too"],
+"createdAt": "timestamp",
+"updatedAt": "timestamp"
+}
+}
+
+- Client-Side logic (angular / react/ ... ): Store the JWT token securely on the client side (usually in a local storage) for future authentication.
+
+2- Login
+
+- To log in, make a POST request to the /api/auth/login endpoint with the following JSON payload:
+
+#### POST /api/auth/login
+
+Content-Type: application/json
+
+{
+"email": "user@example.com",
+"password": "password123"
+}
+
+- Use the registered email and password.
+
+- If the login is successful, you will receive a 200 OK response with a JWT token in the token field
+
+{
+"token": "Bearer <JWT_TOKEN>"
+}
+
+## Run Docker
+
+1- Docker:
+
+- You need to have Docker installed on your machine. If you don't have Docker yet, you can get it https://docs.docker.com/get-docker/
+
+2- Docker Compose:
+
+- This is a tool for defining and running multi-container Docker applications. For instructions on how to install it, follow the official documentation https://docs.docker.com/compose/.
+
+Lets setup the project now :
+
+3- Clone the repository:
+
+    git clone https://github.com/CyxMouz/doc_api
+
+    cd doc_api
+
+4- Build and start the Docker containers:
+
+- This step will create two containers, one for the app and another for the MongoDB database.
+
+  docker-compose up --build
+
+- Note: The first time you run this command, Docker will download the necessary images which might take some time, depending on your internet connection.
+
+5- After the build is completed, your application should be running and accessible at:
+
+    http://localhost:3000
+
+    MongoDB is also exposed and can be accessed at:
+
+    mongodb://localhost:27017
+
+## Database Schema
+
+- Category Schema (category.js):
+
+This schema defines a category with a name (required and unique) and an optional description.
+
+It uses Mongoose timestamps to automatically add createdAt and updatedAt fields.
+
+The design choice here is to captures basic category information.
+
+- Product schema (product.js):
+
+This schema defines a product with fields for name, category (a reference to the Category model), price, availability, description, quantity, imageList, imageUrl, promo_rate, dated_promo, datef_promo, promo_price, totalReviews, totalStars, avg_stars, and reviews (an array of references to Review model).It also uses timestamps.
+
+The design choice is extensive, covering various product details such as pricing, availability, images as main product image and list of product images, and promotional information.
+It also maintains statistics like total reviews and average rating.
+
+The use of references for categories and reviews establishes relationships between models. So only customers who bought a products are allowed rate it.
+
+- Purchase Schema (purchase.js):
+
+The purchase schema defines a purchase with fields for user (a reference to the User model), product (a reference to the Product model), quantity, totalPrice, purchaseDate, and cardNumber.
+It uses timestamps.
+
+The design choice captures information related to purchases, including the user, product, quantity, and payment details. It also records the purchase date.
+
+- Review Schema (review.js):
+
+The review schema defines a review with fields for user (a reference to the User model), product (a reference to the Product model), stars, and comment.
+It uses timestamps.
+
+The design choice allows users to provide reviews for products, including a star rating and optional comments.
+
+- User Schema (user.js):
+
+The user schema defines a user with fields for username, email, password, role (admin or customer), gender, purchaseHistory (an array of references to Purchase model), and addresses.
+It also uses timestamps.
+
+The schema defines methods for comparing passwords (using bcrypt) and pre-saving middleware for hashing passwords before saving.
+
+The design choice captures user information, including authentication credentials, roles, and purchase history. It also allows users to have multiple addresses.
 
 ## Utility
 
