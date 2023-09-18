@@ -348,3 +348,9 @@ The design choice captures user information, including authentication credential
 1- Create new Category with random name
 
 2- Create random Product with created category, random name, random price, random availabilitty
+
+#### 🌟 Thank You! Hope u Like IT ! :D
+
+- If you have any feedback, please don't hesitate to let us know ^^. i'm always looking to improve.
+
+Stay curious and happy coding! 🚀
