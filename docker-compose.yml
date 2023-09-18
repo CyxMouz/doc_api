@@ -1,12 +1,11 @@
 version: "3"
 services:
-  mongodb:
+   mongodb:
     image: mongo
     ports:
       - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=""
-      - MONGO_INITDB_ROOT_PASSWORD=""
+      networks:
+      - myIp
 
   app:
     build: .
@@ -14,3 +13,9 @@ services:
       - "3000:3000"
     depends_on:
       - mongodb
+      networks:
+      - myIp
+
+      networks:
+  myIp: 127.0.0.1
+  
