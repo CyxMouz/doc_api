@@ -287,7 +287,7 @@ Lets setup the project now :
 
 5- After the build is completed, your application should be running and accessible at:
 
-    http://localhost:3000
+      http://localhost:3000
 
 - MongoDB is also exposed and can be accessed at:
 
