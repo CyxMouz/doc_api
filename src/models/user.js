@@ -18,12 +18,12 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "customer"],
-    default: "customer", // Default role is "customer"
+    enum: ["admin", "customer"], // in my case now i have only 2 roles
+    default: "customer", // Here default role will be customer
   },
   gender: {
     type: String,
-    enum: ["male", "female"],
+    enum: ["male", "female"], // :)
   },
 
   purchaseHistory: [
@@ -56,9 +56,9 @@ userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
       return next();
     }
-    const salt = await bcrypt.genSalt(10); // Generate a salt
-    const hashedPassword = await bcrypt.hash(this.password, salt); // Hash the password
-    this.password = hashedPassword; // Replace the plain password with the hashed one
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+    this.password = hashedPassword;
     next();
   } catch (error) {
     return next(error);

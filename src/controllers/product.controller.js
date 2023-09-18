@@ -4,8 +4,6 @@ const Review = require("../models/review");
 
 const axios = require("axios");
 
-const __ = require("lodash");
-
 // Create a new product
 exports.create = async (req, res) => {
   const {
@@ -14,7 +12,7 @@ exports.create = async (req, res) => {
     price,
     availability,
     description,
-    quantity,
+    quantity, // by default 0
     imageUrl,
     imageList,
   } = req.body;
@@ -29,8 +27,10 @@ exports.create = async (req, res) => {
       imageUrl,
       imageList,
     });
+
     await newProduct.save();
 
+    // in case we want to bulk products :
     //const insertedProducts = await Product.insertMany(productsData);
 
     res.status(201).json(newProduct);
@@ -121,7 +121,6 @@ exports.getAll = async (req, res) => {
     pageSize = 10,
     name,
     category,
-
     minPrice,
     maxPrice,
   } = req.query;

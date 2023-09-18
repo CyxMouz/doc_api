@@ -27,7 +27,6 @@ router.get(
   purchaseController.getUserPurchaseHistory
 );
 
-// Update a purchase record by ID
 //router.put("/:id", purchaseController.update);
 
 // Delete a purchase record by ID

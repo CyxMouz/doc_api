@@ -10,7 +10,7 @@ const midllewareProduct = require("../middleware/reviewProduct.middleware");
 router.post("/", [requireAuth], productController.create);
 
 // Read all products
-router.get("/", [requireAuth], productController.getAll);
+router.get("/", productController.getAll);
 
 // Fetch a product from external API
 router.get(

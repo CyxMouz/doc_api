@@ -7,11 +7,7 @@ const mUser = require("../middleware/user.middleware");
 // Create a new user
 router.post("/", userController.create);
 
-router.post(
-  "/admin/",
-  [requireAuth, mUser.isAdmin],
-  userController.createAdmin
-);
+router.post("/admin/", [requireAuth, mUser.isAdmin], userController.create);
 
 // // Read all users
 router.get("/", userController.getAll);
@@ -20,7 +16,7 @@ router.get("/", userController.getAll);
 // router.get("/:id", userController.getOne);
 
 // // Update a user by ID
-// router.put("/:id", userController.update);
+// router.put("/:id", [requireAuth] userController.update);
 
 // // Delete a user by ID
 // router.delete("/:id", userController.delete);

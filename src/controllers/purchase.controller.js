@@ -4,13 +4,10 @@ const User = require("../models/user");
 const axios = require("axios");
 let mongoose = require("mongoose");
 
-// Create a new purchase record
+// Create a new purchase record | we can use transaction here
 exports.create = async (req, res) => {
-  const { userId, productId, quantity } = req.body;
-
-  // const session = await mongoose.startSession();
-
-  // session.startTransaction();
+  const { productId, quantity } = req.body;
+  let userId = req.user.id;
 
   try {
     const product = await Product.findById(productId);
@@ -57,28 +54,19 @@ exports.create = async (req, res) => {
     user.purchaseHistory.push(purchase);
     await user.save();
 
-    // await session.commitTransaction();
-    // session.endSession();
-
-    res.status(201).send(purchase);
+    res.status(201).json(purchase);
   } catch (error) {
-    // await session.abortTransaction();
-    // session.endSession();
-
-    res.status(400).send(error);
+    res.status(400).json(error);
   }
 };
 
 // Create a new purchase record for multiple products
 exports.createMultiple = async (req, res) => {
-  const { selectedProducts, userId } = req.body;
+  const { selectedProducts } = req.body;
+  let userId = req.user.id;
 
-  // Define an array to store purchase records
   const purchaseRecords = [];
 
-  // Start a session for the transaction
-  const session = await mongoose.startSession();
-  session.startTransaction();
   const user = await User.findById(userId);
   try {
     for (const selectedProduct of selectedProducts) {
@@ -87,14 +75,10 @@ exports.createMultiple = async (req, res) => {
       const product = await Product.findById(productId);
 
       if (!product || !user) {
-        await session.abortTransaction();
-        session.endSession();
         return res.status(400).json({ message: "Product or user not found" });
       }
 
       if (!product.availability || product.quantity < quantity) {
-        await session.abortTransaction();
-        session.endSession();
         return res.status(400).json({
           message: "Product is unavailable or quantity is insufficient",
         });
@@ -113,10 +97,8 @@ exports.createMultiple = async (req, res) => {
         totalPrice,
       });
 
-      // Save the purchase record to the database
       await purchase.save();
 
-      // Push the purchase record to the array
       purchaseRecords.push(purchase);
 
       // Update product quantity and availability
@@ -127,19 +109,10 @@ exports.createMultiple = async (req, res) => {
       await product.save();
     }
 
-    // Commit the transaction
-    await session.commitTransaction();
-    session.endSession();
-
-    // Return a success response with purchase records
     res
       .status(201)
       .json({ message: "Purchases completed", purchases: purchaseRecords });
   } catch (error) {
-    // Rollback the transaction and return an error response
-    await session.abortTransaction();
-    session.endSession();
-    console.log(error);
     res.status(400).json({ message: "Failed to complete purchases", error });
   }
 };
@@ -154,32 +127,15 @@ exports.getUserPurchaseHistory = async (req, res) => {
       .sort({ purchaseDate: -1 });
     res.status(200).json(purchases);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json(error);
   }
 };
 
-// Update a purchase record by ID
-exports.update = async (req, res) => {
-  const { id } = req.params;
-  const { user, product, quantity } = req.body;
+//
+// Update a purchase record by ID, ps: no need i think !
+exports.update = async (req, res) => {};
 
-  try {
-    const updatedPurchase = await Purchase.findByIdAndUpdate(
-      id,
-      { user, product, quantity },
-      { new: true }
-    );
-
-    if (!updatedPurchase) {
-      return res.status(404).send("Purchase record not found");
-    }
-
-    res.send(updatedPurchase);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
-// Delete a purchase record by ID
+// Delete a purchase record by ID, no need for tests purpose
 exports.delete = async (req, res) => {
   const { id } = req.params;
 
@@ -187,14 +143,15 @@ exports.delete = async (req, res) => {
     const deletedPurchase = await Purchase.findByIdAndDelete(id);
 
     if (!deletedPurchase) {
-      return res.status(404).send("Purchase record not found");
+      return res.status(404).json("Purchase record not found");
     }
 
-    res.send(deletedPurchase);
+    res.json(deletedPurchase);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).json(error);
   }
 };
+
 exports.getPurchaseStats = async (req, res) => {
   try {
     let totalPurchase = await getTotalPurchases();
@@ -207,7 +164,7 @@ exports.getPurchaseStats = async (req, res) => {
       { trend: trend },
     ]);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json(error);
   }
 };
 
@@ -234,10 +191,10 @@ getTopSellingProducts = async () => {
         },
       },
       {
-        $sort: { totalPurchases: -1 }, // Sort in descending order based on total purchases
+        $sort: { totalPurchases: -1 },
       },
       {
-        $limit: 10, // Limit the results to the top 10 products (adjust as needed)
+        $limit: 10,
       },
     ]);
 
@@ -284,7 +241,7 @@ getPurchaseTrends = async () => {
         $project: {
           month: { $month: "$purchaseDate" },
           year: { $year: "$purchaseDate" },
-          product: 1, // Include the product field
+          product: 1,
         },
       },
       {
@@ -319,7 +276,7 @@ getPurchaseTrends = async () => {
           _id: 0,
           year: "$_id.year",
           month: "$_id.month",
-          topProducts: { $slice: ["$topProducts", 3] }, // Include only the top 3 products
+          topProducts: { $slice: ["$topProducts", 3] }, // Include only the top 3 products here
         },
       },
       {
@@ -337,9 +294,16 @@ exports.fetchCreditCardData = async (req, res) => {
   try {
     let { size, credit_card_type } = req.query;
 
-    // if user dont give any credit card type by default it will be visa
-    if (credit_card_type == null || credit_card_type == undefined) {
+    // if in the api call credits card is not given; type by default will be visa
+    if (
+      credit_card_type == null ||
+      credit_card_type == undefined ||
+      credit_card_type == ""
+    ) {
       credit_card_type = "visa";
+    }
+    if (!size || size < 0 || size > 100) {
+      size = 100;
     }
 
     const response = await axios.get(
@@ -356,12 +320,12 @@ exports.fetchCreditCardData = async (req, res) => {
         };
       });
 
-    return res.send([
+    return res.json([
       { filteredData: filteredData },
       { totalCreditCards: filteredData.length },
       { creditCardName: credit_card_type },
     ]);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json(error);
   }
 };

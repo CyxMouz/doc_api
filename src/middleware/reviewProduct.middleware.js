@@ -1,8 +1,10 @@
 const User = require("../models/user");
 const Product = require("../models/product");
 
+// middleware to check if user can review or not a product, based on the condition : if he already did any purchase of that product
+
 exports.isEligible = async (req, res, next) => {
-  const { id } = req.params; // Remove .id here, as you're already destructuring the 'id' from params
+  const { id } = req.params;
   try {
     let product = await Product.findById(id);
     let user = await User.findById(req.user.id).populate("purchaseHistory");
