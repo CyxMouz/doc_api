@@ -289,9 +289,9 @@ Lets setup the project now :
 
     http://localhost:3000
 
-    MongoDB is also exposed and can be accessed at:
+- MongoDB is also exposed and can be accessed at:
 
-    mongodb://localhost:27017
+  mongodb://localhost:27017
 
 ## Database Schema
 
