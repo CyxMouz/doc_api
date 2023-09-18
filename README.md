@@ -52,7 +52,7 @@ To run the application in production mode:
 
 The server will start on the port you specified in the .env file.
 
-## API Routes
+## API Endpoints
 
 This project exposes the following API routes:
 
@@ -105,7 +105,7 @@ Several middleware functions have been implemented:
 - #### isEligible: Check if a user can review a product based on past purchases.
 - #### isValidCard: To validate credit card data (yet to be implemented).
 
-## API Endpoints
+## API Endpoints With Doc & Examples
 
 ### Category API Endpoints
 
@@ -359,6 +359,12 @@ The design choice captures user information, including authentication credential
 1- Create new Category with random name
 
 2- Create random Product with created category, random name, random price, random availabilitty
+
+## Testing
+
+Unit tests need to be implemented, use:
+
+    npm test
 
 ##
 
