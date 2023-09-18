@@ -355,4 +355,4 @@ The design choice captures user information, including authentication credential
 
 - If you have any feedback, please don't hesitate to let us know ^^. i'm always looking to improve.
 
-Stay curious and happy coding! 🚀
+#### Stay curious and happy coding! 🚀
