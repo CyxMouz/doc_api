@@ -249,8 +249,6 @@ Content-Type: application/json
 }
 }
 
-- Client-Side logic (angular / react/ ... ): Store the JWT token securely on the client side (usually in a local storage) for future authentication.
-
 2- Login
 
 - To log in, make a POST request to the /api/auth/login endpoint with the following JSON payload:
@@ -271,6 +269,8 @@ Content-Type: application/json
 {
 "token": "Bearer <JWT_TOKEN>"
 }
+
+- Client-Side logic (angular / react/ ... ): Store the JWT token securely on the client side (usually in a local storage) for future authentication.
 
 ## Run Docker
 
